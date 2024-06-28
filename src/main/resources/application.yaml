@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: qadevs
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+server:
+  port: 8787
+
+
