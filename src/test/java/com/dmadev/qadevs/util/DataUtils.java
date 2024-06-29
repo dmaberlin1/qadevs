@@ -28,7 +28,7 @@ public abstract class DataUtils {
                 .firstName("Frank")
                 .lastName("Jones")
                 .email("frank.jones@gmail.com")
-                .specialty("java")
+                .specialty("c#")
                 .status(Status.DELETED)
                 .build();
     }
@@ -59,7 +59,7 @@ public abstract class DataUtils {
                 .firstName("Frank")
                 .lastName("Jones")
                 .email("frank.jones@gmail.com")
-                .specialty("java")
+                .specialty("c#")
                 .status(Status.DELETED)
                 .build();
     }
