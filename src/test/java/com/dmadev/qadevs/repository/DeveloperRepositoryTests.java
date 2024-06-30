@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -106,10 +107,10 @@ public class DeveloperRepositoryTests {
         DeveloperEntity frankJonesTransient = DataUtils.getFrankJonesTransient();
         developerRepository.save(frankJonesTransient);
         //when
-        DeveloperEntity obtainedDeveloperByEmail = developerRepository.findByEmail(frankJonesTransient.getEmail());
+        Optional<DeveloperEntity> obtainedDeveloperByEmail = developerRepository.findByEmail(frankJonesTransient.getEmail());
         //then
-        assertThat(obtainedDeveloperByEmail).isNotNull();
-        assertThat(obtainedDeveloperByEmail.getEmail()).isEqualTo(frankJonesTransient.getEmail());
+        assertThat(obtainedDeveloperByEmail).isNotEmpty();
+        assertThat(obtainedDeveloperByEmail.get().getEmail()).isEqualTo(frankJonesTransient.getEmail());
     }
 
     @Test

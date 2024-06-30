@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,8 +20,8 @@ public class DeveloperServiceImpl implements DeveloperService {
 
     @Override
     public DeveloperEntity saveDeveloper(DeveloperEntity developer) {
-        DeveloperEntity duplicateCandidate = developerRepository.findByEmail(developer.getEmail());
-        if (Objects.nonNull(duplicateCandidate)) {
+        Optional<DeveloperEntity> duplicateCandidate = developerRepository.findByEmail(developer.getEmail());
+        if (duplicateCandidate.isPresent()) {
             throw new DeveloperWithDuplicateEmailException("Developer with defined email is already exist");
         }
         return developerRepository.save(developer);
@@ -46,9 +46,9 @@ public class DeveloperServiceImpl implements DeveloperService {
     }
 
     @Override
-    public DeveloperEntity getDeveloperByEmail(String email) {
-        DeveloperEntity byEmail = developerRepository.findByEmail(email);
-        if (Objects.isNull(byEmail)) {
+    public Optional<DeveloperEntity> getDeveloperByEmail(String email) {
+        Optional<DeveloperEntity> byEmail = developerRepository.findByEmail(email);
+        if (byEmail.isEmpty()) {
             throw new DeveloperNotFoundException("Developer with  email %s is not exist".formatted(email));
         }
 

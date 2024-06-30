@@ -3,6 +3,7 @@ package com.dmadev.qadevs.service;
 import com.dmadev.qadevs.entity.DeveloperEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DeveloperService {
 
@@ -12,7 +13,7 @@ public interface DeveloperService {
 
     DeveloperEntity getDeveloperById(Integer id);
 
-    DeveloperEntity getDeveloperByEmail(String email);
+    Optional<DeveloperEntity> getDeveloperByEmail(String email);
 
     List<DeveloperEntity> getAllDevelopers();
     List<DeveloperEntity> getAllOnBenchDevelopers();

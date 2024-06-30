@@ -44,7 +44,7 @@ class DeveloperServiceImplTest {
         //given
         DeveloperEntity johnDoeTransient = DataUtils.getJohnDoeTransient();
         DeveloperEntity johnDoePersisted = DataUtils.getJohnDoePersisted();
-        BDDMockito.given(developerRepository.findByEmail(anyString())).willReturn(null);
+        BDDMockito.given(developerRepository.findByEmail(anyString())).willReturn(Optional.empty());
         BDDMockito.given(developerRepository.save(any(DeveloperEntity.class)))
                 .willReturn(DataUtils.getJohnDoePersisted());
         //when
@@ -62,7 +62,7 @@ class DeveloperServiceImplTest {
         DeveloperEntity johnDoeTransient = DataUtils.getJohnDoeTransient();
         DeveloperEntity johnDoeTransientDuplicate = DataUtils.getJohnDoeTransient();
         BDDMockito.given(developerRepository.findByEmail(johnDoeTransient.getEmail()))
-                .willReturn(DataUtils.getJohnDoePersisted());
+                .willReturn(Optional.ofNullable(DataUtils.getJohnDoePersisted()));
         //when
         assertThrows(
                 DeveloperWithDuplicateEmailException.class,
@@ -146,11 +146,12 @@ class DeveloperServiceImplTest {
     public void givenEmail_whenGetDeveloperByEmail_thenDeveloperIsReturn() {
         //given
         DeveloperEntity frankJonesPersisted = DataUtils.getFrankJonesPersisted();
+        DeveloperEntity frankJonesPersistedOptinal = DataUtils.getFrankJonesPersisted();
         String email = frankJonesPersisted.getEmail();
-        BDDMockito.given(developerRepository.findByEmail(anyString())).willReturn(frankJonesPersisted);
+        BDDMockito.given(developerRepository.findByEmail(anyString())).willReturn(Optional.of(frankJonesPersisted));
 
         //when
-        DeveloperEntity obtainedDeveloper = serviceUnderTest.getDeveloperByEmail(email);
+        Optional<DeveloperEntity> obtainedDeveloper = serviceUnderTest.getDeveloperByEmail(email);
 
         //then
         assertThat(obtainedDeveloper).isNotNull();
@@ -165,7 +166,7 @@ class DeveloperServiceImplTest {
         DeveloperEntity frankJonesPersisted = DataUtils.getFrankJonesPersisted();
         String email = frankJonesPersisted.getEmail();
         BDDMockito.given(developerRepository.findByEmail(anyString())).willReturn(null);
-//        BDDMockito.given(developerRepository.findByEmail(anyString())).willReturn(Optional.empty());
+        //BDDMockito.given(developerRepository.findByEmail(anyString())).willReturn(Optional.empty());
 
 
         //when
@@ -260,7 +261,7 @@ class DeveloperServiceImplTest {
     public void givenIncorrectId_whenSoftDeleteById_thenRepositorySaveMethodIsCalled(){
         //given
         var johnDoePersisted = DataUtils.getJohnDoePersisted();
-//        BDDMockito.given(developerRepository.findById(anyInt())).willThrow(DeveloperNotFoundException.class);
+
         BDDMockito.given(developerRepository.findById(anyInt())).willReturn(Optional.empty());
 
         //when
