@@ -1,8 +1,7 @@
 spring:
-  application:
-    name: qadevs
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres_test
     username: postgres
     password: Postgres01
     driver-class-name: org.postgresql.Driver
@@ -11,7 +10,6 @@ spring:
       ddl-auto: create
     show-sql: true
 
-server:
-  port: 8787
+
 
 
