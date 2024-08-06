@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -28,8 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ItDeveloperControllerV1Test {
+public class ItDeveloperControllerV1Test extends AbstractRestControllerBaseTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,7 +43,7 @@ public class ItDeveloperControllerV1Test {
     private DeveloperRepository developerRepository;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         developerRepository.deleteAll();
     }
 
@@ -104,9 +106,10 @@ public class ItDeveloperControllerV1Test {
     public void givenDeveloperDto_whenUpdateDeveloper_thenSuccessResponse() throws Exception {
         //given
         String updatedMail = "updated@gmail.com";
-        DeveloperEntity johnDoeEntity = DataUtils.getJohnDoePersisted();
+        DeveloperEntity johnDoeEntity = DataUtils.getJohnDoeTransient();
         developerRepository.save(johnDoeEntity);
         DeveloperDto johnDoeDto = DataUtils.getJohnDoeDtoPersisted();
+        johnDoeDto.setId(johnDoeEntity.getId());
         johnDoeDto.setEmail(updatedMail);
 
         //when
@@ -196,13 +199,13 @@ public class ItDeveloperControllerV1Test {
     @DisplayName("Test soft delete developer by id functionality")
     public void givenId_whenSoftDelete_ThenSuccessResponse() throws Exception {
         //given
-        DeveloperEntity developer=DataUtils.getJohnDoeTransient();
+        DeveloperEntity developer = DataUtils.getJohnDoeTransient();
         developerRepository.save(developer);
         //when
-        ResultActions resultActions = mockMvc.perform(delete(pathApiV1Developers + "/"+developer.getId())
+        ResultActions resultActions = mockMvc.perform(delete(pathApiV1Developers + "/" + developer.getId())
                 .contentType(MediaType.APPLICATION_JSON));
         //then
-        DeveloperEntity obtainedDeveloper=developerRepository.findById(developer.getId()).orElse(null);
+        DeveloperEntity obtainedDeveloper = developerRepository.findById(developer.getId()).orElse(null);
         assertThat(obtainedDeveloper).isNotNull();
         assertThat(obtainedDeveloper.getStatus()).isEqualTo(Status.DELETED);
         resultActions
@@ -224,8 +227,8 @@ public class ItDeveloperControllerV1Test {
         resultActions
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status",CoreMatchers.is(badRequestStatus)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message",CoreMatchers.is(errorMessage)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(badRequestStatus)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is(errorMessage)));
     }
 
 
@@ -238,10 +241,10 @@ public class ItDeveloperControllerV1Test {
         developerRepository.save(developerEntity);
         //when
         ResultActions resultActions = mockMvc.
-                perform(delete(pathApiV1Developers + "/"+ id +"?isHard=true")
-                .contentType(MediaType.APPLICATION_JSON));
+                perform(delete(pathApiV1Developers + "/" + id + "?isHard=true")
+                        .contentType(MediaType.APPLICATION_JSON));
         //then
-        DeveloperEntity obtainedDeveloper=developerRepository.findById(id).orElse(null);
+        DeveloperEntity obtainedDeveloper = developerRepository.findById(id).orElse(null);
         assertThat(obtainedDeveloper).isNull();
         resultActions
                 .andDo(MockMvcResultHandlers.print())
@@ -264,8 +267,8 @@ public class ItDeveloperControllerV1Test {
         resultActions
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.status",CoreMatchers.is(badRequestStatus)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message",CoreMatchers.is(errorMessage)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status", CoreMatchers.is(badRequestStatus)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", CoreMatchers.is(errorMessage)));
     }
     //eof
 }
